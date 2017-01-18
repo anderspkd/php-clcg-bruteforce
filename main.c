@@ -25,23 +25,30 @@ typedef struct pair {
  * possible combinations for a in [0,m1-1], b in [0, m2-1]. Will
  * always return such a valid pair.
  */
-static inline void update_pair(int d, pair *p)
-{
-        if(p->a >= m1 - 1) {
-                p->a = 0;
-                p->b = -d + (m1 - 1);
-        }
-        else if(p->b >= m2 - 1) {
-                p->a = d;
-                p->b = 0;
-        }
-        else {
-                p->a++;
-                p->b++;
-        }
 
-        return;
-}
+#define update_pair(d, p)				  \
+	do {						  \
+	if(p.a >= m1 - 1) { p.a = 0; p.b = -d + (m1 + 1); \
+	}else if(p.b >= m2 - 1){ p.a = d; p.b = 0;	  \
+	}else{ p.a++; p.b++; }} while(0)
+
+/* static inline void update_pair(int d, pair *p) */
+/* { */
+/*         if(p->a >= m1 - 1) { */
+/*                 p->a = 0; */
+/*                 p->b = -d + (m1 - 1); */
+/*         } */
+/*         else if(p->b >= m2 - 1) { */
+/*                 p->a = d; */
+/*                 p->b = 0; */
+/*         } */
+/*         else { */
+/*                 p->a++; */
+/*                 p->b++; */
+/*         } */
+
+/*         return; */
+/* } */
 
 int main(int argc, char **argv)
 {
@@ -59,7 +66,7 @@ int main(int argc, char **argv)
                 printf("Could not open output file...\n");
                 exit(EXIT_FAILURE);
         }
-                
+
         x1 = atoi(argv[1]);
         x2 = atoi(argv[2]);
         x3 = atoi(argv[3]);
@@ -76,23 +83,23 @@ int main(int argc, char **argv)
         setbuf(fp, NULL);
 
 #pragma omp parallel for num_threads(6)
-        
+
         for(i = -err; i < err + 1; i++) {
 
                 pair p;
                 int d, z, q, found_pair, a, b;
-                
+
                 d = x1 + i;
 
                 p.a = d;
                 p.b = 0;
 
                 found_pair = 0;
-                        
+
                 while(1) {
                         a = p.a;
                         b = p.b;
-                        
+
                         MODMULT(53668, a1, 12211, m1, a);
                         MODMULT(52774, a2, 3791, m2, b);
 
@@ -104,13 +111,13 @@ int main(int argc, char **argv)
 
                         if((z < x2a ? (z - x2a) + (m1 - 1) : (z - x2a)) <= x2ab) {
 
-                                printf(".");
+                                /* printf("."); */
 
                                 MODMULT(53668, a1, 12211, m1, a);
                                 MODMULT(52774, a2, 3791, m2, b);
 
                                 z = a - b;
-                        
+
                                 if(z < 1) {
                                         z += m1 - 1;
                                 }
@@ -119,10 +126,10 @@ int main(int argc, char **argv)
                                         found_pair = 1;
                                         break;
                                 }
-                 
+
                         }
 
-                        update_pair(d, &p);
+                        update_pair(d, p);
 
                         if(p.a == d && p.b == 0) {
                                 break;
@@ -139,8 +146,8 @@ int main(int argc, char **argv)
         }
 
         printf("\n");
-        
+
         fclose(fp);
-        
+
         return EXIT_SUCCESS;
 }
