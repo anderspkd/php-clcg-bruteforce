@@ -44,15 +44,50 @@ in a more general situation. That is, the distance between points are
 not so important. What's important is that is it known.
 
 
-## Timing
+## Timing/testing
+
+```
+$ lscpu | grep "Arch\|Model\ \|^CPU("
+Architecture:          x86_64
+CPU(s):                4
+Model name:            Intel(R) Core(TM) i5-3230M CPU @ 2.60GHz
+```
+
+Timing execution. See `generate-test-values.php` for how the test
+values was generated (no suprises there), and `process.py` for
+extracting information from the output of a call to `uniqid`.
 
 ```
 $ php generate-test-values.php > testvals
-$ time ./main $(head -n3 testvals | awk -F'.' '{print $2}')
+$ time ./main $(./process.py $(cat testvals) | awk -F'-' '{print $2}' | tr -d ' ' | head -n3)
 [snip]
-some output
-$ test result
+
+real	39m29,076s
+user	157m18,952s
+sys	    0m0,217s
+$ cat output
+:1008469547:329414316:0
 ```
+
+Compare
+
+```
+$ pr -m -t <(./process.py $(cat testvals) | awk -F':|-' '{print $5}' | tr -d ' ') <(./clcg.py $(cat output | awk -F: '{print $2 " " $3}'))
+3.16209742			    3.16209746
+8.14131920			    8.14131930
+8.87498792			    8.87498803
+9.39615853			    9.39615864
+4.77255658			    4.77255664
+3.13084848			    3.13084852
+8.32636214			    8.32636224
+5.15919248			    5.15919254
+7.60551973			    7.60551983
+5.83177053			    5.83177061
+```
+
+First column is original testvalues, second is the CLCG values
+recomputed from the computed result. There seems to consistent +[0 -
+10] deviance. No idea where that comes from...
 
 ## Dude, wtf, your code is slow and ugly!
 
