@@ -25,23 +25,31 @@ insecure even when the `more_entropy` option was set. Turns out that
 it is (in some circumstances).
 
 
-## (some circumstances)
-
-The program works under the assumption that we are able to observe
-three consequtive calls to `uniqid('', true)`.
-
-
 ## How it works
 
-It bruteforces the internal state, that's how :-)
+Suppose it is possible to observe three consequtive calls to
+`uniqid('', true)`. These will have the form
 
-It works because a CLCG behaves kinda like a linear function in two
-unknowns. Therefore, if we can get three consequtive points, we can
-recreate the "line" used by the generator.
+```
+T1 --- T13X1.X2 --- X8
+```
 
-Although I havn't tested it, this program should be modifiable to work
-in a more general situation. That is, the distance between points are
-not so important. What's important is that is it known.
+Where `X=X1.X2 --- X8` corresponds to `10*CLCG()` truncated to 8 decimal
+places. It is these values that we will use.
+
+The following is then done:
+
+1. Write `X = S1 - S2 mod m` and make a guess at `S1`, `S2`.
+2. Advance the CLCG one step and compare with `X2`.
+3. If it matches, advance yet another step and compare with `X3`
+4. If this matches, output `S1`, `S2`.
+
+
+Note that this will probably work in a more general setting, so long
+as we know the distance between each call to `uniqid`. Also note that
+this is a vary naive approach: It should be possible to find `S1`,
+`S2` that satisfy both `X1` and `X2` directly, instead of by
+bruteforce.
 
 
 ## Timing/testing
