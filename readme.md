@@ -15,7 +15,7 @@ To run do
 `$ main [x1] [x2] [x3]`
 
 where `x1`, `x2` and `x3` are three consequtive outputs from PHPs CLCG
-(e.g., from `more_entropy` part of `uniqid`).
+after being converted into integers (see `process.py`).
 
 
 ## Why?
