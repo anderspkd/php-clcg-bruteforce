@@ -46,10 +46,7 @@ The following is then done:
 
 
 Note that this will probably work in a more general setting, so long
-as we know the distance between each call to `uniqid`. Also note that
-this is a vary naive approach: It should be possible to find `S1`,
-`S2` that satisfy both `X1` and `X2` directly, instead of by
-bruteforce.
+as we know the distance between each call to `uniqid`.
 
 
 ## Timing/testing
@@ -97,7 +94,21 @@ First column is original testvalues, second is the CLCG values
 recomputed from the computed result. There seems to consistent +[0 -
 10] deviance. No idea where that comes from...
 
+
 ## Dude, wtf, your code is slow and ugly!
 
-I know. I'm in no way a C programmer. There's probably also better
-(i.e., faster) ways to do this.
+I know. I'm in no way a C programmer, so any oddities or
+in-efficiancies (due to the programming) is a result of that.
+
+
+Also, the approach taken is very naive. The first two inputs will
+satisfy
+
+```
+X1 = S1 - S2 mod m
+X2 = (a*S1 mod m1) - (b*S2 mod m2) mod m
+```
+
+Where `a`, `b`, `m1`, `m2` and `m` are known. That is, it is almost
+two equations in two unknowns. However, all the modular stuff kinda
+ruins it :-(
