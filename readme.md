@@ -1,6 +1,6 @@
-Program for bruteforcing the internal state of PHPs [CLCG](wiki link)
+Program for bruteforcing the internal state of PHPs [CLCG](https://en.wikipedia.org/wiki/Combined_Linear_Congruential_Generator)
 PRG using the values exposed by `uniqid('', true)`, i.e., the
-`more_entropy` option that can be set when calling the `uniqid`[1](php link)
+`more_entropy` option that can be set when calling the `uniqid`[1](http://php.net/manual/en/function.uniqid.php)
 function.
 
 
@@ -20,9 +20,11 @@ where `x1`, `x2` and `x3` are three consequtive outputs from PHPs CLCG
 
 ## Why?
 
-After watching [this](youtube link) I wondered if `uniqid` was also
-insecure even when the `more_entropy` option was set. Turns out that
-it is (in some circumstances).
+After
+watching
+[this](https://www.youtube.com/watch?v=WiGif0D3fIc&feature=youtu.be) I
+wondered if `uniqid` was also insecure even when the `more_entropy`
+option was set. Turns out that it is (in some circumstances).
 
 
 ## How it works
